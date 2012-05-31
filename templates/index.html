@@ -1,0 +1,135 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Porra de Riesgo | España se va a la mierda, ¿cuándo crees que lo hará?</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css" media="screen" title="no title" charset="utf-8"/>
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		{% if messages %}
+		{% for cat, msg in messages %}
+		{% if cat == 'error' %}
+		alert("{{ msg }}");
+		{% endif %}
+		{% endfor %}
+		{% endif %}
+		
+	    $(".prima").keydown(function(event) {
+	        // Allow: backspace, delete, tab, escape, and enter
+	        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || 
+	             // Allow: Ctrl+A
+	            (event.keyCode == 65 && event.ctrlKey === true) || 
+	             // Allow: home, end, left, right
+	            (event.keyCode >= 35 && event.keyCode <= 39)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        else {
+	            // Ensure that it is a number and stop the keypress
+	            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+	                event.preventDefault(); 
+	            }   
+	        }
+   		});
+		
+		fetch_data();
+		
+		page = {{ page }};
+	});
+	</script>
+	
+</head>
+<body>
+	<div class="general">
+		<div class="header">
+			<a href="/" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Porra de Riesgo" /></a>
+			<h2>España se va a la mierda, ¿cuándo crees que lo hará?</h2>
+		</div>
+		<div class="main">
+			<div class="data">
+				<div class="numbers">
+					<div class="current">
+						<p><span class="big">{{ curr_int }}</span>,{{ curr_dec }}</p>
+						<p>Puntos ahora</p>
+					</div>
+					<div class="mini">
+						<p><span class="big">{{ min_int }}</span>,{{ min_dec }}</p>
+						<p>Máx.</p>
+					</div>
+					<div class="mini">
+						<p><span class="big">{{ max_int }}</span>,{{ max_dec }}</p>
+						<p>Min.</p>
+					</div>
+				</div>
+				<div class="graph" id="chart_div">
+
+				</div>
+				<div class="clear"></div>
+			</div>
+
+			<div class="cont">
+				<div class="clear"></div>
+				<a name="bet"></a>
+				<div class="cont">
+					<h1 class="long">¿Cuántos puntos alcanzará la prima de riesgo cuando rescaten a España?</h1>
+					<div class="send">
+						<form method="post" action="/bet">
+							<input type="text" name="prima" class="prima" value="000" maxlength="3" autocomplete="off" onfocus="if (this.value == '000') {this.value = '';}" onblur="if (this.value == ''){ this.value = '000';}" />
+								<h2>puntos</h2>
+							<input type="text" name="twitter" class="twitter" value="@twitter" onfocus="if (this.value == '@twitter') {this.value = '@';}" onblur="if (this.value == '@'){ this.value = '@twitter';}" />
+							<input type="submit" class="button" />
+						</form>
+					</div>
+				</div>
+				
+				<h1>{{ num_bets }} Apuestas<a href="#bet" class="add"><img src="{{ url_for('static', filename='images/add.png') }}" alt="Añadir" /></a></h1>
+				<ul>
+					{% for bet in bets %}
+					<li class="bet">
+						<a href="http://twitter.com/{{ bet['who'] }}">
+							<img src="{{ bet['avatar'] }}" alt="avatar" />
+						</a>
+						<div class="mini">
+							<p><span class="big">{{ bet['bet'] }}</span></p>
+							<p>Rescate</p>
+						</div>
+						{% if messages %}
+						{% for cat, msg in messages %}
+						{% if cat != 'error' and bet['who'] == cat %}
+						<a href="https://twitter.com/share" data-count="none" class="tuitear twitter-share-button" data-text="Apuesto a que rescatarán a España cuando la prima de riesgo llegue a {{ msg }}" data-lang="es" data-hashtags="porraderiesgo">Twittear</a>
+						{% endif %}
+						{% endfor %}
+						{% endif %}
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			
+		</div>
+		<div class="clear"></div>
+		<div class="footer">
+			<p>Una web chachi de <a href="http://twitter.com/baggiobanglio" />baggiobanglio</a> y <a href="http://twitter.com/jdiezlopez">jdiezlopez</a></p>
+		</div>
+	</div>
+	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-32259235-1']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+</body>
+</html>
+{% endwith %}

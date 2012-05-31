@@ -1,0 +1,18 @@
+﻿{% for bet in bets %}
+<li class="bet">
+	<a href="http://twitter.com/{{ bet['who'] }}">
+		<img src="{{ bet['avatar'] }}" alt="avatar" />
+	</a>
+	<div class="mini">
+		<p><span class="big">{{ bet['bet'] }}</span></p>
+		<p>Rescate</p>
+	</div>
+	{% if messages %}
+	{% for cat, msg in messages %}
+	{% if cat != 'error' and bet['who'] == cat %}
+	<a href="https://twitter.com/share" data-count="none" class="tuitear twitter-share-button" data-text="Apuesto a que rescatarán a España cuando la prima de riesgo llegue a {{ msg }}" data-lang="es" data-hashtags="porraderiesgo">Twittear</a>
+	{% endif %}
+	{% endfor %}
+	{% endif %}
+</li>
+{% endfor %}
