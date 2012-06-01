@@ -15,7 +15,8 @@ class PrimaWeb:
 		if len > 0:
 			if self.redis.lrange("prima_historic", len-1, len-1)[0].split("##")[1] != prima.split("##")[1]: 
 				self.redis.rpush("prima_historic", prima)
-				self.redis.ltrim("prima_historic", len - self.historic_max, self.historic_max)
+				if len > self.historic_max:
+					self.redis.ltrim("prima_historic", len - self.historic_max, self.historic_max)
 		else:
 			self.redis.rpush("prima_historic", prima)
 		
@@ -66,7 +67,7 @@ class PrimaWeb:
 	
 		try:
 			avatar = json.loads(requests.get('http://twitter.com/users/' + who + '.json').content)['profile_image_url'].replace("_normal", "_reasonably_small")
-			avatar = unicode(avatar)
+			avatar = avatar.encode('utf-8')
 		except:
 			return False
 			
@@ -83,7 +84,7 @@ class PrimaWeb:
 		if bets:
 			for bet in bets:
 				data = bet.split("##")
-				result.append({"avatar": data[0], "bet": data[1], "who": data[2]})
+				result.append({"avatar": data[0].decode('utf-8'), "bet": data[1], "who": data[2]})
 
 		return reversed(result)
 	

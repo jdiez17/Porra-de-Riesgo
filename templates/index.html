@@ -87,7 +87,7 @@
 				</div>
 				
 				<h1>{{ num_bets }} Apuestas<a href="#bet" class="add"><img src="{{ url_for('static', filename='images/add.png') }}" alt="Añadir" /></a></h1>
-				<ul>
+				<ul><li class="bet" style="display: none;" />
 					{% for bet in bets %}
 					<li class="bet">
 						<a href="http://twitter.com/{{ bet['who'] }}">
